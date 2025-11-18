@@ -1,0 +1,9 @@
+﻿@page
+@model StatusModel
+@{
+    ViewData["Title"] = "Status";
+    Layout = null;
+    Response.ContentType = "application/json";
+}
+
+@Html.Raw(Model.StatusJson)

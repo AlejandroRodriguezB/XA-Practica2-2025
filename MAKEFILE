@@ -1,0 +1,17 @@
+init-dev:
+	cd env/dev && terraform init
+
+apply-dev:
+	cd env/dev && terraform apply -auto-approve
+
+destroy-dev:
+	cd env/dev && terraform destroy -auto-approve
+
+init-pro:
+	cd env/prod && terraform init
+
+apply-pro:
+	cd env/prod && terraform apply -auto-approve
+
+destroy-pro:
+	cd env/prod && terraform destroy -auto-approve
