@@ -11,13 +11,13 @@ destroy-dev:
 	cd env/dev && terraform destroy -auto-approve
 
 init-pro:
-	cd env/prod && terraform init
+	cd env/pro && terraform init
 
 plan-pro:
-	cd env/prod && terraform plan
+	cd env/pro && terraform plan
 
 apply-pro:
-	cd env/prod && terraform apply -auto-approve
+	cd env/pro && terraform apply -auto-approve
 
 destroy-pro:
-	cd env/prod && terraform destroy -auto-approve
+	cd env/pro && terraform destroy -auto-approve
