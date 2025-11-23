@@ -1,6 +1,9 @@
 init-dev:
 	cd env/dev && terraform init
 
+plan-dev:
+	cd env/dev && terraform plan
+
 apply-dev:
 	cd env/dev && terraform apply -auto-approve
 
@@ -9,6 +12,9 @@ destroy-dev:
 
 init-pro:
 	cd env/prod && terraform init
+
+plan-pro:
+	cd env/prod && terraform plan
 
 apply-pro:
 	cd env/prod && terraform apply -auto-approve
