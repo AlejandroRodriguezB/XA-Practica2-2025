@@ -12,13 +12,29 @@ module "postgres" {
   network_id = module.network.network_id
 }
 
+module "prometheus" {
+  source           = "../../modules/prometheus"
+  name             = "dev"
+  network_id       = module.network.network_id
+  prometheus_port  = var.exposed_prometheus_port
+}
+
+module "grafana" {
+  source           = "../../modules/grafana"
+  name             = "dev"
+  network_id       = module.network.network_id
+  grafana_port     = var.grafana_port
+  admin_user       = var.grafana_user
+  admin_password   = var.grafana_password
+}
+
 module "webApi" {
   source = "../../modules/webApi"
   name = "dev"
   postgres_connection = module.postgres.postgres_url
   redis_connection = ""
   network_id = module.network.network_id
-  exposed_port = var.exposed_port
+  exposed_port = var.exposed_web_port
   build_context = "../../WebApi"
   dockerfile = "../../WebApi/Dockerfile"
   environment = "Development"
