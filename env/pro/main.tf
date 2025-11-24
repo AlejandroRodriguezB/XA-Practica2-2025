@@ -34,6 +34,15 @@ module "grafana" {
   admin_password   = var.grafana_password
 }
 
+module "minio" {
+  source = "../../modules/minio"
+  name = "pro"
+  network_id = module.network.network_id
+  minio_port = var.minio_port
+  admin_user = var.minio_user
+  admin_password = var.minio_password
+}
+
 module "webApi" {
   source = "../../modules/webApi"
   name = "pro"

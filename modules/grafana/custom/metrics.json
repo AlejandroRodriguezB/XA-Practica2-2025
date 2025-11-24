@@ -1,0 +1,86 @@
+{
+  "id": null,
+  "title": ".NET WebApi Metrics",
+  "schemaVersion": 36,
+  "version": 1,
+  "refresh": "5s",
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Requests per second",
+      "targets": [
+        {
+          "expr": "rate(http_requests_received_total[1m])",
+          "legendFormat": "rps"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Request Duration (95th percentile)",
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "p95"
+        }
+      ],
+      "gridPos": { "x": 6, "y": 0, "w": 18, "h": 4 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Process CPU Seconds",
+      "targets": [
+        {
+          "expr": "rate(process_cpu_seconds_total[1m])",
+          "legendFormat": "cpu"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Working Set",
+      "targets": [
+        {
+          "expr": "process_working_set_bytes",
+          "legendFormat": "working_set"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "GC Heap Size",
+      "targets": [
+        {
+          "expr": "dotnet_gc_heap_size_bytes",
+          "legendFormat": "heap"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 }
+    },
+    {
+      "type": "stat",
+      "title": "Exceptions",
+      "targets": [
+        {
+          "expr": "increase(dotnet_exceptions_total[5m])",
+          "legendFormat": "exceptions"
+        }
+      ],
+      "gridPos": { "x": 12, "y": 10, "w": 12, "h": 6 }
+    },
+    {
+      "type": "timeseries",
+      "title": "Threads",
+      "targets": [
+        {
+          "expr": "process_threads_total",
+          "legendFormat": "threads"
+        }
+      ],
+      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 6 }
+    }
+  ]
+}

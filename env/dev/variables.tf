@@ -6,3 +6,6 @@ variable "postgres_db" {}
 variable "grafana_port" {}
 variable "grafana_user" {}
 variable "grafana_password" {}
+variable "minio_port" {}
+variable "minio_user" {}
+variable "minio_password" {}

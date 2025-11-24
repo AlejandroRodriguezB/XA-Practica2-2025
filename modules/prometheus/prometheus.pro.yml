@@ -7,6 +7,5 @@ scrape_configs:
       - targets: ['localhost:9090']
 
   - job_name: 'webApi'
-    metrics_path: '/status'
     static_configs:
-      - targets: ['${name}-web:8080'] #TODO: Fix this
+      - targets: ['pro-web:8080']

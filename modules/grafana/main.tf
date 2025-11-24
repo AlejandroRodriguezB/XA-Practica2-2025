@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     docker = {
-      source = "kreuzwerker/docker"
+      source  = "kreuzwerker/docker"
       version = "3.6.2"
     }
   }
@@ -25,7 +25,24 @@ resource "docker_container" "grafana" {
     target = "/var/lib/grafana"
     type   = "volume"
   }
-  //TODO: Create a bind mount for custom dashboard
+
+  mounts {
+    source = abspath("${path.module}/datasource.${var.name}.yaml")
+    target = "/etc/grafana/provisioning/datasources/datasource.yaml"
+    type = "bind"
+  }
+
+  mounts {
+    source = abspath("${path.module}/dashboards.yaml")
+    target = "/etc/grafana/provisioning/dashboards/dashboards.yaml"
+    type = "bind"
+  }
+
+  mounts {
+    source = abspath("${path.module}/custom")
+    target = "/etc/grafana/provisioning/dashboards/custom"
+    type = "bind"
+  }
 
   ports {
     internal = 3000
