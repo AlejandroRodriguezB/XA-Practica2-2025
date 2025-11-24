@@ -16,7 +16,7 @@ resource "docker_container" "prometheus" {
   image = "prom/prometheus:v3.8.0-rc.0"
 
   mounts {
-    source = abspath("${path.module}/prometheus.yml")
+    source = abspath("${path.module}/prometheus.${var.name}.yml")
     target = "/etc/prometheus/prometheus.yml"
     type = "bind"
   }
