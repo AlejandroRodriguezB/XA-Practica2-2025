@@ -47,4 +47,6 @@ module "webApi" {
   build_context = "../../WebApi"
   dockerfile = "../../WebApi/Dockerfile"
   environment = "Development"
+  minio_user = var.minio_user
+  minio_password = var.minio_password
 }

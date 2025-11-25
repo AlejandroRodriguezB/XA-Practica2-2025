@@ -6,3 +6,5 @@ variable "network_id" {}
 variable "exposed_port" {}
 variable "build_context" {}
 variable "dockerfile" {}
+variable "minio_user" {}
+variable "minio_password" {}

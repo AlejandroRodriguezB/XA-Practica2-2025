@@ -22,6 +22,13 @@ if (!string.IsNullOrEmpty(redisUrl))
 
 var app = builder.Build();
 
+// MinIO config
+using (var scope = app.Services.CreateScope())
+{
+    var minio = scope.ServiceProvider.GetRequiredService<MinioService>();
+    await minio.TryEnsureBucketAsync();
+}
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 

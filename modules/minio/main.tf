@@ -24,10 +24,10 @@ resource "docker_container" "minio" {
     "MINIO_ROOT_PASSWORD=${var.admin_password}"
   ]
 
-  command = ["server", "/data"]
+  command = ["server", "/data", "--console-address", ":9001"]
 
   ports {
-    internal = 9000
+    internal = 9001
     external = var.minio_port
   }
   

@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     docker = {
-      source = "kreuzwerker/docker"
+      source  = "kreuzwerker/docker"
       version = "3.6.2"
     }
   }
@@ -10,7 +10,7 @@ terraform {
 resource "docker_image" "webApi" {
   name = "webapi-${var.name}:latest"
   build {
-    context = var.build_context
+    context    = var.build_context
     dockerfile = var.dockerfile
   }
 }
@@ -21,9 +21,12 @@ resource "docker_container" "web" {
 
   env = concat([
     "ASPNETCORE_ENVIRONMENT=${var.environment}",
-    "ConnectionStrings__PostgresConnection=${var.postgres_connection}"
-  ], 
-  var.redis_connection != "" ? ["Redis__Connection=${var.redis_connection}"] : []
+    "ConnectionStrings__PostgresConnection=${var.postgres_connection}",
+    "MINIO__ENDPOINT=http://${var.name}-minio:9000",
+    "MINIO__ACCESSKEY=${var.minio_user}",
+    "MINIO__SECRETKEY=${var.minio_password}"
+    ],
+    var.redis_connection != "" ? ["Redis__Connection=${var.redis_connection}"] : []
   )
 
   networks_advanced {
