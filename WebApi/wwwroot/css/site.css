@@ -20,3 +20,9 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.minio-icon {
+    position: absolute;
+    top: 12px;
+    right: 20px;
+}

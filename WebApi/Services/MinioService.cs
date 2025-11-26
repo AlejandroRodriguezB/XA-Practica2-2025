@@ -1,14 +1,19 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Minio;
 using Minio.DataModel.Args;
+using System;
+using System.Security.AccessControl;
 
 namespace WebApi.Services
 {
     public class MinioService
     {
         private readonly ILogger<MinioService> _logger;
-        private readonly MinioClient? _client;
+        public readonly MinioClient? _client;
         private readonly string _bucket = "files";
+        private const string ObjectName = "logo.png";
+
         public bool Enabled => _client != null;
 
         public MinioService(ILogger<MinioService> logger, IConfiguration cfg)
@@ -60,6 +65,55 @@ namespace WebApi.Services
             catch
             {
                 _logger.LogError("Error ensuring MinIO bucket exists");
+            }
+        }
+
+        public async Task PutObjectAsync(Stream? stream, IFormFile file)
+        {
+            if (_client == null)
+            {
+                throw new InvalidOperationException("MinIO client is not initialized.");
+            }
+
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream), "Stream cannot be null.");
+            }
+
+            await _client.PutObjectAsync(
+                new PutObjectArgs()
+                    .WithBucket(_bucket)
+                    .WithObject(ObjectName)
+                    .WithStreamData(stream)
+                    .WithObjectSize(stream.Length)
+                    .WithContentType(file.ContentType)
+            );
+        }
+
+        public async Task<FileContentResult?> GetObjectAsync()
+        {
+            if (_client == null)
+                return null;
+
+            try
+            {
+                using var ms = new MemoryStream();
+
+                await _client.GetObjectAsync(
+                    new GetObjectArgs()
+                        .WithBucket(_bucket)
+                        .WithObject(ObjectName)
+                        .WithCallbackStream(s => s.CopyTo(ms))
+                );
+
+                var data = ms.ToArray();
+
+                return new FileContentResult(data, "image/png");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error getting object {Object} from bucket {Bucket}", ObjectName, _bucket);
+                return null;
             }
         }
     }

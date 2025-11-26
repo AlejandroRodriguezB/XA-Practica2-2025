@@ -1,0 +1,22 @@
+﻿@page
+@model WebApi.Pages.ImageManagerModel
+@{
+}
+
+<h2>Imagen de la aplicación</h2>
+
+@if (!Model.MinioAvailable)
+{
+    <div class="alert alert-warning">
+        MinIO no está disponible.
+    </div>
+}
+else
+{
+    <img src="/ImageView" style="max-width:200px; border:1px solid #ccc;" />
+
+    <form method="post" enctype="multipart/form-data" class="mt-3">
+        <input type="file" name="file" accept="image/*" />
+        <button type="submit" class="btn btn-primary">Subir nueva imagen</button>
+    </form>
+}
