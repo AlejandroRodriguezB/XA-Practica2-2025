@@ -20,9 +20,12 @@ if (!string.IsNullOrEmpty(redisUrl))
         ConnectionMultiplexer.Connect(redisUrl));
 }
 
+// MinIO config
+builder.Services.AddSingleton<MinioService>();
+
 var app = builder.Build();
 
-// MinIO config
+// MinIO create bucket if not exists
 using (var scope = app.Services.CreateScope())
 {
     var minio = scope.ServiceProvider.GetRequiredService<MinioService>();

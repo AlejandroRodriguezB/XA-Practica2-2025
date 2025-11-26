@@ -1,19 +1,23 @@
-﻿using Minio;
+﻿using Microsoft.Extensions.Logging;
+using Minio;
 using Minio.DataModel.Args;
 
 namespace WebApi.Services
 {
     public class MinioService
     {
+        private readonly ILogger<MinioService> _logger;
         private readonly MinioClient? _client;
         private readonly string _bucket = "files";
         public bool Enabled => _client != null;
 
-        public MinioService(IConfiguration cfg)
+        public MinioService(ILogger<MinioService> logger, IConfiguration cfg)
         {
-            var endpoint = cfg["MINIO__ENDPOINT"];
-            var access = cfg["MINIO__ACCESSKEY"];
-            var secret = cfg["MINIO__SECRETKEY"];
+            _logger = logger;
+
+            var endpoint = cfg["MINIO:ENDPOINT"];
+            var access = cfg["MINIO:ACCESSKEY"];
+            var secret = cfg["MINIO:SECRETKEY"];
 
             // Si faltan configuraciones → MinIO desactivado
             if (string.IsNullOrEmpty(endpoint) ||
@@ -21,19 +25,21 @@ namespace WebApi.Services
                 string.IsNullOrEmpty(secret))
             {
                 _client = null;
+                _logger.LogError("There's missing MinIO configuration values");
                 return;
             }
 
             try
             {
-                _client = (MinioClient?)new MinioClient()
+                _client = (MinioClient)new MinioClient()
                     .WithEndpoint(endpoint)
                     .WithCredentials(access, secret)
                     .WithSSL(false)
                     .Build();
             }
-            catch
+            catch(Exception e)
             {
+                _logger.LogError(e, "Error initializing MinIO client");
                 _client = null;
             }
         }
@@ -53,6 +59,7 @@ namespace WebApi.Services
             }
             catch
             {
+                _logger.LogError("Error ensuring MinIO bucket exists");
             }
         }
     }
