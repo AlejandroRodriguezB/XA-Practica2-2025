@@ -1,4 +1,5 @@
 variable "name" {}
+variable "env_name" {}
 variable "environment" {}
 variable "postgres_connection" {}
 variable "redis_connection" {}

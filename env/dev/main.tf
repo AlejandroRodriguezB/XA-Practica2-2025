@@ -42,6 +42,7 @@ module "webApi" {
 
   for_each            = toset([for i in range(var.replicas) : "dev${i}"])
   name                = each.key
+  env_name            = "dev"
   postgres_connection = module.postgres.postgres_url
   redis_connection    = ""
   network_id          = module.network.network_id

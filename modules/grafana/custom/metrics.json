@@ -1,65 +1,157 @@
 {
-  "id": null,
-  "title": "WebApi HA (NGINX + Multi-Replica)",
-  "timezone": "browser",
-  "schemaVersion": 36,
-  "version": 1,
-  "refresh": "5s",
-  "tags": ["webapi", "ha", "nginx", "prometheus"],
+  "title": "ASP.NET Core - Prometheus Dashboard",
+  "uid": "aspnet-prom-dashboard",
+  "schemaVersion": 39,
+  "refresh": "10s",
   "panels": [
     {
+      "type": "stat",
+      "title": "Requests Per Second",
       "id": 1,
-      "type": "stat",
-      "title": "RPS (Total)",
       "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 0, "w": 8, "h": 4 },
       "targets": [
-        {
-          "expr": "sum(rate(aspnetcore_requests_total[1m]))",
-          "refId": "A"
-        }
-      ],
-      "gridPos": { "h": 3, "w": 6, "x": 0, "y": 0 }
+        { "expr": "rate(microsoft_aspnetcore_hosting_requests_per_second_total[1m])" }
+      ]
     },
     {
+      "type": "stat",
+      "title": "Requests In Progress",
       "id": 2,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 8, "y": 0, "w": 8, "h": 4 },
+      "targets": [
+        { "expr": "sum(http_requests_in_progress)" }
+      ]
+    },
+    {
       "type": "stat",
-      "title": "Errores (5xx)",
-      "datasource": "Prometheus",
-      "targets": [
-        {
-          "expr": "sum(rate(http_requests_total{status=~\"5..\"}[1m]))",
-          "refId": "A"
-        }
-      ],
-      "gridPos": { "h": 3, "w": 6, "x": 6, "y": 0 }
-    },
-    {
+      "title": "Kestrel Active Connections",
       "id": 3,
-      "type": "timeseries",
-      "title": "CPU Average (todas las instancias)",
       "datasource": "Prometheus",
+      "gridPos": { "x": 16, "y": 0, "w": 8, "h": 4 },
+      "targets": [
+        { "expr": "sum(microsoft_aspnetcore_server_kestrel_kestrel_active_connections)" }
+      ]
+    },
+
+    {
+      "type": "graph",
+      "title": "HTTP Request Duration (avg)",
+      "id": 4,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 4, "w": 8, "h": 7 },
       "targets": [
         {
-          "expr": "avg(rate(process_cpu_seconds_total[1m]))",
-          "legendFormat": "CPU total",
-          "refId": "A"
+          "expr": "rate(http_request_duration_seconds_sum[2m]) / rate(http_request_duration_seconds_count[2m])"
         }
-      ],
-      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 3 }
+      ]
     },
     {
-      "id": 4,
-      "type": "timeseries",
-      "title": "RAM Average (todas las instancias)",
+      "type": "graph",
+      "title": "HTTP Latency by Route",
+      "id": 5,
       "datasource": "Prometheus",
+      "gridPos": { "x": 8, "y": 4, "w": 8, "h": 7 },
       "targets": [
         {
-          "expr": "avg(process_resident_memory_bytes)",
-          "legendFormat": "RAM total",
-          "refId": "A"
+          "expr": "rate(microsoft_aspnetcore_hosting_http_server_request_duration_sum[2m]) / rate(microsoft_aspnetcore_hosting_http_server_request_duration_count[2m])",
+          "legendFormat": "{{http_route}}"
         }
-      ],
-      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 3 }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "HTTP Requests by Status Code",
+      "id": 6,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 16, "y": 4, "w": 8, "h": 7 },
+      "targets": [
+        {
+          "expr": "increase(http_requests_received_total[5m])",
+          "legendFormat": "{{code}} {{page}}"
+        }
+      ]
+    },
+
+    {
+      "type": "graph",
+      "title": "Process CPU Usage",
+      "id": 7,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 11, "w": 12, "h": 7 },
+      "targets": [
+        { "expr": "rate(process_cpu_seconds_total[1m])" }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "Process Working Set Memory",
+      "id": 8,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 11, "w": 12, "h": 7 },
+      "targets": [
+        { "expr": "process_working_set_bytes" }
+      ]
+    },
+
+    {
+      "type": "graph",
+      "title": ".NET GC Heap Size",
+      "id": 9,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 18, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "dotnet_total_memory_bytes" }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": ".NET GC Collections",
+      "id": 10,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 18, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "increase(dotnet_collection_count_total{generation=\"0\"}[5m])", "legendFormat": "Gen0" },
+        { "expr": "increase(dotnet_collection_count_total{generation=\"1\"}[5m])", "legendFormat": "Gen1" },
+        { "expr": "increase(dotnet_collection_count_total{generation=\"2\"}[5m])", "legendFormat": "Gen2" }
+      ]
+    },
+
+    {
+      "type": "graph",
+      "title": "Npgsql Connections (Idle vs Used)",
+      "id": 11,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 26, "w": 12, "h": 8 },
+      "targets": [
+        { "expr": "npgsql_db_client_connections_usage{state=\"idle\"}", "legendFormat": "Idle" },
+        { "expr": "npgsql_db_client_connections_usage{state=\"used\"}", "legendFormat": "Used" }
+      ]
+    },
+    {
+      "type": "graph",
+      "title": "DNS Lookup Duration",
+      "id": 12,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 12, "y": 26, "w": 12, "h": 8 },
+      "targets": [
+        {
+          "expr": "rate(system_net_nameresolution_dns_lookup_duration_sum[2m]) / rate(system_net_nameresolution_dns_lookup_duration_count[2m])"
+        }
+      ]
+    },
+
+    {
+      "type": "graph",
+      "title": "Sockets: Bytes Sent / Received",
+      "id": 13,
+      "datasource": "Prometheus",
+      "gridPos": { "x": 0, "y": 34, "w": 24, "h": 8 },
+      "targets": [
+        { "expr": "rate(system_net_sockets_bytes_sent[2m])", "legendFormat": "Sent" },
+        { "expr": "rate(system_net_sockets_bytes_received[2m])", "legendFormat": "Received" }
+      ]
     }
   ],
   "time": {
