@@ -8,4 +8,4 @@ scrape_configs:
 
   - job_name: 'webApi'
     static_configs:
-      - targets: ['dev-web:8080']
+      - targets: ['dev-nginx:80']

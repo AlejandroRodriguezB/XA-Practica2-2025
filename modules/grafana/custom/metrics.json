@@ -1,86 +1,69 @@
 {
   "id": null,
-  "title": ".NET WebApi Metrics",
+  "title": "WebApi HA (NGINX + Multi-Replica)",
+  "timezone": "browser",
   "schemaVersion": 36,
   "version": 1,
   "refresh": "5s",
+  "tags": ["webapi", "ha", "nginx", "prometheus"],
   "panels": [
     {
+      "id": 1,
       "type": "stat",
-      "title": "Requests per second",
+      "title": "RPS (Total)",
+      "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "rate(http_requests_received_total[1m])",
-          "legendFormat": "rps"
+          "expr": "sum(rate(aspnetcore_requests_total[1m]))",
+          "refId": "A"
         }
       ],
-      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 }
+      "gridPos": { "h": 3, "w": 6, "x": 0, "y": 0 }
     },
     {
-      "type": "timeseries",
-      "title": "Request Duration (95th percentile)",
-      "targets": [
-        {
-          "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))",
-          "legendFormat": "p95"
-        }
-      ],
-      "gridPos": { "x": 6, "y": 0, "w": 18, "h": 4 }
-    },
-    {
-      "type": "timeseries",
-      "title": "Process CPU Seconds",
-      "targets": [
-        {
-          "expr": "rate(process_cpu_seconds_total[1m])",
-          "legendFormat": "cpu"
-        }
-      ],
-      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 }
-    },
-    {
-      "type": "timeseries",
-      "title": "Memory Working Set",
-      "targets": [
-        {
-          "expr": "process_working_set_bytes",
-          "legendFormat": "working_set"
-        }
-      ],
-      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 6 }
-    },
-    {
-      "type": "timeseries",
-      "title": "GC Heap Size",
-      "targets": [
-        {
-          "expr": "dotnet_gc_heap_size_bytes",
-          "legendFormat": "heap"
-        }
-      ],
-      "gridPos": { "x": 0, "y": 10, "w": 12, "h": 6 }
-    },
-    {
+      "id": 2,
       "type": "stat",
-      "title": "Exceptions",
+      "title": "Errores (5xx)",
+      "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "increase(dotnet_exceptions_total[5m])",
-          "legendFormat": "exceptions"
+          "expr": "sum(rate(http_requests_total{status=~\"5..\"}[1m]))",
+          "refId": "A"
         }
       ],
-      "gridPos": { "x": 12, "y": 10, "w": 12, "h": 6 }
+      "gridPos": { "h": 3, "w": 6, "x": 6, "y": 0 }
     },
     {
+      "id": 3,
       "type": "timeseries",
-      "title": "Threads",
+      "title": "CPU Average (todas las instancias)",
+      "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "process_threads_total",
-          "legendFormat": "threads"
+          "expr": "avg(rate(process_cpu_seconds_total[1m]))",
+          "legendFormat": "CPU total",
+          "refId": "A"
         }
       ],
-      "gridPos": { "x": 0, "y": 16, "w": 24, "h": 6 }
+      "gridPos": { "h": 4, "w": 12, "x": 0, "y": 3 }
+    },
+    {
+      "id": 4,
+      "type": "timeseries",
+      "title": "RAM Average (todas las instancias)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "avg(process_resident_memory_bytes)",
+          "legendFormat": "RAM total",
+          "refId": "A"
+        }
+      ],
+      "gridPos": { "h": 4, "w": 12, "x": 12, "y": 3 }
     }
-  ]
+  ],
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  }
 }
