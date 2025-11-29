@@ -22,10 +22,13 @@ namespace WebApi.Pages
 
         private const string CacheKey = "products:list";
 
+        public string? InstanceName { get; set; }
+
         public async Task OnGetAsync()
         {
             try
             {
+                InstanceName = Environment.GetEnvironmentVariable("HOSTNAME") ?? "unknown-instance";
                 if (_redis is not null)
                 {
                     var db = _redis.GetDatabase();

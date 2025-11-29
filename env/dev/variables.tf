@@ -9,3 +9,4 @@ variable "grafana_password" {}
 variable "minio_port" {}
 variable "minio_user" {}
 variable "minio_password" {}
+variable "replicas" {}

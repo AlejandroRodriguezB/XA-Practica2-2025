@@ -45,14 +45,28 @@ module "minio" {
 
 module "webApi" {
   source = "../../modules/webApi"
-  name = "pro"
+  for_each = toset([for i in range(var.replicas) : "pro${i}"])
+  name = each.key
   postgres_connection = module.postgres.postgres_url
   redis_connection = module.redis.redis_url
   network_id = module.network.network_id
-  exposed_port = var.exposed_web_port
   build_context = "../../WebApi"
   dockerfile = "../../WebApi/Dockerfile"
   environment = "Production"
   minio_user = var.minio_user
   minio_password = var.minio_password
+}
+
+locals {
+  webapi_names = [
+    for w in module.webApi : w.container_name
+  ]
+}
+
+module "nginx" {
+  source = "../../modules/nginx"
+  name   = "pro"
+  network_id  = module.network.network_id
+  public_port = var.exposed_web_port
+  webapi_names = [for w in module.webApi : w.container_name]
 }

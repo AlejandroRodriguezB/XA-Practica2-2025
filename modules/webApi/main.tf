@@ -32,9 +32,8 @@ resource "docker_container" "web" {
   networks_advanced {
     name = var.network_id
   }
+}
 
-  ports {
-    internal = 8080
-    external = var.exposed_port
-  }
+output "container_name" {
+  value = docker_container.web.name
 }

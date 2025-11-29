@@ -1,0 +1,21 @@
+events {}
+
+http {
+    upstream webapp_cluster {
+%{ for name in webapi_names ~}
+        server ${name}:${web_port};
+%{ endfor ~}
+    }
+
+    server {
+        listen 80;
+
+        location / {
+            proxy_pass http://webapp_cluster;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}
