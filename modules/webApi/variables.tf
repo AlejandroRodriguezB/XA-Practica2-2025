@@ -7,3 +7,4 @@ variable "build_context" {}
 variable "dockerfile" {}
 variable "minio_user" {}
 variable "minio_password" {}
+variable "restart" {}

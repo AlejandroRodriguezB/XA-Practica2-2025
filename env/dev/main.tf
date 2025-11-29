@@ -1,55 +1,56 @@
 module "network" {
-  source = "../../modules/network"
+  source       = "../../modules/network"
   network_name = "net-dev"
 }
 
 module "postgres" {
-  source = "../../modules/postgres"
-  name = "dev"
-  user = var.postgres_user
-  password = var.postgres_password
-  database = var.postgres_db
+  source     = "../../modules/postgres"
+  name       = "dev"
+  user       = var.postgres_user
+  password   = var.postgres_password
+  database   = var.postgres_db
   network_id = module.network.network_id
 }
 
 module "prometheus" {
-  source           = "../../modules/prometheus"
-  name             = "dev"
-  network_id       = module.network.network_id
-  prometheus_port  = var.exposed_prometheus_port
+  source          = "../../modules/prometheus"
+  name            = "dev"
+  network_id      = module.network.network_id
+  prometheus_port = var.exposed_prometheus_port
 }
 
 module "grafana" {
-  source           = "../../modules/grafana"
-  name             = "dev"
-  network_id       = module.network.network_id
-  grafana_port     = var.grafana_port
-  admin_user       = var.grafana_user
-  admin_password   = var.grafana_password
+  source         = "../../modules/grafana"
+  name           = "dev"
+  network_id     = module.network.network_id
+  grafana_port   = var.grafana_port
+  admin_user     = var.grafana_user
+  admin_password = var.grafana_password
 }
 
 module "minio" {
-  source = "../../modules/minio"
-  name = "dev"
-  network_id = module.network.network_id
-  minio_port = var.minio_port
-  admin_user = var.minio_user
+  source         = "../../modules/minio"
+  name           = "dev"
+  network_id     = module.network.network_id
+  minio_port     = var.minio_port
+  admin_user     = var.minio_user
   admin_password = var.minio_password
 }
 
 module "webApi" {
   source = "../../modules/webApi"
-  
-  for_each = toset([for i in range(var.replicas) : "dev${i}"])
-  name = each.key
+
+  for_each            = toset([for i in range(var.replicas) : "dev${i}"])
+  name                = each.key
   postgres_connection = module.postgres.postgres_url
-  redis_connection = ""
-  network_id = module.network.network_id
-  build_context = "../../WebApi"
-  dockerfile = "../../WebApi/Dockerfile"
-  environment = "Development"
-  minio_user = var.minio_user
-  minio_password = var.minio_password
+  redis_connection    = ""
+  network_id          = module.network.network_id
+  build_context       = "../../WebApi"
+  dockerfile          = "../../WebApi/Dockerfile"
+  environment         = "Development"
+  minio_user          = var.minio_user
+  minio_password      = var.minio_password
+  restart             = "no"
 }
 
 

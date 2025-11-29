@@ -29,19 +29,19 @@ resource "docker_container" "grafana" {
   mounts {
     source = abspath("${path.module}/datasource.${var.name}.yaml")
     target = "/etc/grafana/provisioning/datasources/datasource.yaml"
-    type = "bind"
+    type   = "bind"
   }
 
   mounts {
     source = abspath("${path.module}/dashboards.yaml")
     target = "/etc/grafana/provisioning/dashboards/dashboards.yaml"
-    type = "bind"
+    type   = "bind"
   }
 
   mounts {
     source = abspath("${path.module}/custom")
     target = "/etc/grafana/provisioning/dashboards/custom"
-    type = "bind"
+    type   = "bind"
   }
 
   ports {

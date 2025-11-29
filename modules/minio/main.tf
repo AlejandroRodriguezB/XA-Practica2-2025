@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     docker = {
-      source = "kreuzwerker/docker"
+      source  = "kreuzwerker/docker"
       version = "3.6.2"
     }
   }
@@ -30,7 +30,7 @@ resource "docker_container" "minio" {
     internal = 9001
     external = var.minio_port
   }
-  
+
   mounts {
     source = docker_volume.minio_data.name
     target = "/data"

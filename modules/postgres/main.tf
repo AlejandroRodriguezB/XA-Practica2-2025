@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     docker = {
-      source = "kreuzwerker/docker"
+      source  = "kreuzwerker/docker"
       version = "3.6.2"
     }
   }
@@ -12,7 +12,7 @@ resource "docker_volume" "dbdata" {
 }
 
 resource "docker_container" "postgres" {
-  name = "${var.name}-postgres"
+  name  = "${var.name}-postgres"
   image = "postgres:18"
 
   env = [
@@ -24,13 +24,13 @@ resource "docker_container" "postgres" {
   mounts {
     target = "/var/lib/postgresql/data"
     source = docker_volume.dbdata.name
-    type = "volume"
+    type   = "volume"
   }
 
   mounts {
     target = "/docker-entrypoint-initdb.d/init.sql"
     source = abspath("${path.module}/init.sql")
-    type = "bind"
+    type   = "bind"
   }
 
   networks_advanced {

@@ -12,19 +12,19 @@ resource "docker_volume" "prom_data" {
 }
 
 resource "docker_container" "prometheus" {
-  name = "${var.name}-prometheus"
+  name  = "${var.name}-prometheus"
   image = "prom/prometheus:v3.8.0-rc.0"
 
   mounts {
     source = abspath("${path.module}/prometheus.${var.name}.yml")
     target = "/etc/prometheus/prometheus.yml"
-    type = "bind"
+    type   = "bind"
   }
 
   mounts {
     source = docker_volume.prom_data.name
     target = "/prometheus"
-    type = "volume"
+    type   = "volume"
   }
 
   ports {

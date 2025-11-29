@@ -16,8 +16,9 @@ resource "docker_image" "webApi" {
 }
 
 resource "docker_container" "web" {
-  name  = "${var.name}-web"
-  image = docker_image.webApi.image_id
+  name    = "${var.name}-web"
+  image   = docker_image.webApi.image_id
+  restart = var.restart
 
   env = concat([
     "ASPNETCORE_ENVIRONMENT=${var.environment}",
@@ -28,6 +29,13 @@ resource "docker_container" "web" {
     ],
     var.redis_connection != "" ? ["Redis__Connection=${var.redis_connection}"] : []
   )
+
+  healthcheck {
+    test     = ["CMD-SHELL", "wget -qO- http://localhost:8080/status || exit 1"]
+    interval = "10s"
+    timeout  = "3s"
+    retries  = 3
+  }
 
   networks_advanced {
     name = var.network_id
