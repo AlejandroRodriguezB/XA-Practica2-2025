@@ -54,14 +54,6 @@ module "webApi" {
   restart             = "no"
 }
 
-
-locals {
-  webapi_names = [
-    for w in module.webApi :
-    w.container_name
-  ]
-}
-
 module "nginx" {
   source = "../../modules/nginx"
   name   = "dev"

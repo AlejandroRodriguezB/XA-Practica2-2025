@@ -36,7 +36,3 @@ resource "docker_container" "prometheus" {
     name = var.network_id
   }
 }
-
-output "prometheus_url" {
-  value = "http://localhost:${var.prometheus_port}"
-}

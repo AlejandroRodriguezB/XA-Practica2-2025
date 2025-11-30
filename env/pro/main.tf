@@ -59,12 +59,6 @@ module "webApi" {
   restart             = "always"
 }
 
-locals {
-  webapi_names = [
-    for w in module.webApi : w.container_name
-  ]
-}
-
 module "nginx" {
   source       = "../../modules/nginx"
   name         = "pro"
