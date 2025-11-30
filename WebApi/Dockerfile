@@ -10,6 +10,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends wget && rm -rf 
 RUN useradd -m appuser
 COPY --from=build /app/publish .
 RUN chown -R appuser:appuser /app
+
+RUN mkdir -p /keys && chown -R appuser:appuser /keys
+
 USER appuser
 EXPOSE 8080
 CMD ["dotnet", "WebApi.dll"]

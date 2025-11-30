@@ -15,6 +15,10 @@ resource "docker_image" "webApi" {
   }
 }
 
+resource "docker_volume" "dataprotection" {
+  name = "${var.env_name}-dataprotection_keys"
+}
+
 resource "docker_container" "web" {
   name    = "${var.name}-web"
   image   = docker_image.webApi.image_id
@@ -35,6 +39,12 @@ resource "docker_container" "web" {
     interval = "10s"
     timeout  = "3s"
     retries  = 3
+  }
+
+  mounts {
+    type   = "volume"
+    source = docker_volume.dataprotection.name
+    target = "/keys"
   }
 
   networks_advanced {

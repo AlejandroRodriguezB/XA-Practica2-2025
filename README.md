@@ -49,6 +49,38 @@ Diagrama:
 
 ![Diagrama](Media/ArquitecturaP2.png)
 
-## 3-Tests utilizados
+## 3-Tests utilizados y outputs
+
+### Aplicación Web, Base de Datos y Caché:
+Al igual que en la práctica anterior, se puede insertar y borrar productos, y en producción se puede tirar la base de datos y sigue habiendo datos (aunque no se pueden modificar)
+Con BD y cache:
+![Img web cache + BD ](Media/BdCache.png)
+
+Solo cache:
+![Img web solo cache](Media/Cache.png)
+
+Adicionalmente, se puede desplegar dev y pro al mismo tiempo:
+![Img Docker todo desplegado](Media/All.png)
 
 
+### Balanceador de Carga:
+Cada vez que se carga la web se puede observar que la instancia cambia y concuerda con las instancias en docker:
+![Img web instancia 1](Media/Ins1.png)
+![Img web instancia 2](Media/Ins2.png)
+
+### Monitorización y Logs:
+Se puede acceder a prometheus donde se puede observar que se están consumiendo correctamente los datos:
+![Img prometheus status](Media/Prometheus.png)
+
+Y en grafana se obtiene auto el datasource y se generan gráficas automáticamente:
+![Img grafana dashboard](Media/Grafana.png)
+
+### Almacenamiento de Archivos:
+Desde la web se ha creado una página para insertar imágenes:
+![Img web upload img](Media/Minio.png)
+
+Se actualiza en la cabecera:
+![Img web header updated](Media/HeaderUpdated.png)
+
+Y se puede ver desde la ui de minio:
+![Img minio ui](Media/MinioUi.png)

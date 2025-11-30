@@ -1,9 +1,15 @@
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.EntityFrameworkCore;
 using Prometheus;
 using StackExchange.Redis;
 using WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+builder.Services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo("/keys"))
+    .SetApplicationName("WebApi");
 
 // Add services to the container.
 builder.Services.AddRazorPages();
