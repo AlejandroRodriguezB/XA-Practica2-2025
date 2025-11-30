@@ -27,6 +27,12 @@ resource "docker_container" "prometheus" {
     type   = "volume"
   }
 
+  mounts {
+    type   = "bind"
+    source = abspath("${path.module}/alerts.yml")
+    target = "/etc/prometheus/rules/alerts.yml"
+  }
+
   ports {
     internal = 9090
     external = var.prometheus_port

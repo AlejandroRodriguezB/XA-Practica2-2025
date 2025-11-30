@@ -1,0 +1,10 @@
+groups:
+  - name: webapi-alerts
+    rules:
+      - alert: WebApiDown
+        expr: up == 0
+        for: 10s
+        labels:
+          severity: critical
+        annotations:
+          summary: "Web API appears to be down"
