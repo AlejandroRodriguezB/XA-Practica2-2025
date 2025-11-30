@@ -3,7 +3,15 @@
 @{
     ViewData["Title"] = "Home page";
 }
-<p>Instancia: <strong>@Model.InstanceName</strong></p>
+<p>Instance: <strong>@Model.InstanceName</strong></p>
+
+@if (!Model.IsDbConnected)
+{
+    <div class="alert alert-warning" role="alert">
+        <strong>Warning:</strong> Database is not connected. Creating new products is disabled and delete actions are hidden until the connection is restored.
+    </div>
+}
+
 <div class="container py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1 class="mb-0 display-6">Products inventory</h1>
@@ -58,7 +66,14 @@
                         </div>
 
                         <div class="d-flex">
-                            <button type="submit" class="btn btn-success me-2">Create</button>
+                            @if (Model.IsDbConnected)
+                            {
+                                <button type="submit" class="btn btn-success me-2">Create</button>
+                            }
+                            else
+                            {
+                                <button type="submit" class="btn btn-success me-2" disabled aria-disabled="true" title="Disabled: database disconnected">Create</button>
+                            }
                             <button type="reset" class="btn btn-outline-secondary">Clear</button>
                         </div>
                     </form>
@@ -91,10 +106,13 @@
                                             <td>@p.Price.ToString("C")</td>
                                             <td>@p.Amount</td>
                                             <td class="text-end">
-                                                <form method="post" asp-page-handler="Delete" class="d-inline">
-                                                    <input type="hidden" name="id" value="@p.Id" />
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                                                </form>
+                                                @if (Model.IsDbConnected)
+                                                {
+                                                    <form method="post" asp-page-handler="Delete" class="d-inline">
+                                                        <input type="hidden" name="id" value="@p.Id" />
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                    </form>
+                                                }
                                             </td>
                                         </tr>
                                     }

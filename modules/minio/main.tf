@@ -13,7 +13,7 @@ resource "docker_volume" "minio_data" {
 
 resource "docker_container" "minio" {
   name  = "${var.name}-minio"
-  image = "minio/minio:latest"
+  image = "minio/minio:RELEASE.2025-09-07T16-13-09Z-cpuv1"
 
   networks_advanced {
     name = var.network_id

@@ -24,11 +24,26 @@ namespace WebApi.Pages
 
         public string? InstanceName { get; set; }
 
+        public bool IsDbConnected { get; private set; } = false;
+
         public async Task OnGetAsync()
         {
             try
             {
                 InstanceName = Environment.GetEnvironmentVariable("HOSTNAME") ?? "unknown-instance";
+
+                // Async check for DB connectivity
+                try
+                {
+                    IsDbConnected = await _context.Database.CanConnectAsync();
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Error while checking database connectivity.");
+                    IsDbConnected = false;
+                }
+
+                // Try redis cache first if available
                 if (_redis is not null)
                 {
                     var db = _redis.GetDatabase();

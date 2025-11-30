@@ -12,6 +12,7 @@ namespace WebApi.Services
         private readonly ILogger<MinioService> _logger;
         public readonly MinioClient? _client;
         private readonly string _bucket = "files";
+        private bool _bucketEnsured = false;
         private const string ObjectName = "logo.png";
 
         public bool Enabled => _client != null;
@@ -55,10 +56,10 @@ namespace WebApi.Services
 
             try
             {
-                bool exists = await _client.BucketExistsAsync(
+                _bucketEnsured = await _client.BucketExistsAsync(
                     new BucketExistsArgs().WithBucket(_bucket));
 
-                if (!exists)
+                if (!_bucketEnsured)
                     await _client.MakeBucketAsync(
                         new MakeBucketArgs().WithBucket(_bucket));
             }
@@ -78,6 +79,11 @@ namespace WebApi.Services
             if (stream == null)
             {
                 throw new ArgumentNullException(nameof(stream), "Stream cannot be null.");
+            }
+
+            if (!_bucketEnsured)
+            {
+                await TryEnsureBucketAsync();
             }
 
             await _client.PutObjectAsync(

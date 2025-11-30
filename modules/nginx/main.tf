@@ -24,7 +24,7 @@ resource "local_file" "nginx_conf" {
 
 resource "docker_container" "nginx" {
   name  = "${var.name}-nginx"
-  image = "nginx:latest"
+  image = "nginx:1.29"
 
   ports {
     internal = 80
